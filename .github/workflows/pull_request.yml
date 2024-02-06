@@ -1,0 +1,42 @@
+name: Pull Request
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for Lint
+        uses: chartboost/ruff-action@v1
+
+      - name: Check Formatting
+        uses: chartboost/ruff-action@v1
+        with:
+          args: format --check
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install DynamoDB
+        uses: install-dynamodb
+
+      - name: Pip Install
+        run: pip install -e .
+
+      - name: Pytest
+        run: pytest
+
+      - name: MyPy
+        run: mypy .
+
+      - name: Upload to Codecov.io
+        uses: codecov/codecov-action@v4

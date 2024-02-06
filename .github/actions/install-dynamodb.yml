@@ -1,0 +1,12 @@
+name: Install DynamoDB
+description: >
+  Install a local version of DynamoDB.
+  See https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html
+outputs:
+  dynamodb-dir:
+    description: Path to the directory containing the JAR file
+    value: ${{ github.action_path }}
+runs:
+  using: composite
+  steps:
+    - run: curl https://d1ni2b6xgvw0s0.cloudfront.net/v2.x/dynamodb_local_latest.tar.gz | tar -C ${{ github.action_path }}
