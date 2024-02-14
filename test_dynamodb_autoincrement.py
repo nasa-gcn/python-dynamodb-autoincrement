@@ -2,15 +2,35 @@
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
 
-from botocore.exceptions import ClientError
 import asyncio
+
+import aioboto3
 import pytest
+from botocore.exceptions import ClientError
+from pytest import FixtureRequest
 from pytest_asyncio import fixture as asyncio_fixture
+from pytest_dynamodb.factories import get_config
 
 from dynamodb_autoincrement import DynamoDBAutoIncrement, DynamoDBHistoryAutoIncrement
 
-
 N = 20
+
+
+@asyncio_fixture
+async def asyncio_dynamodb(request: FixtureRequest, dynamodb):
+    proc_fixture = request.getfixturevalue("dynamodb_proc")
+    config = get_config(request)
+
+    session = aioboto3.Session(
+        aws_access_key_id=config["aws_access_key"],
+        aws_secret_access_key=config["aws_secret_key"],
+        region_name=config["aws_region"],
+    )
+
+    async with session.resource(
+        "dynamodb", endpoint_url=f"http://{proc_fixture.host}:{proc_fixture.port}"
+    ) as dynamo_db:
+        yield dynamo_db
 
 
 @asyncio_fixture

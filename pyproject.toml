@@ -26,7 +26,8 @@ dynamic = [ "version" ]
 [project.optional-dependencies]
 test = [
     "pytest",
-    "pytest-dynamodb @ git+https://github.com/lpsinger/pytest-dynamodb@aioboto3",
+    "pytest-asyncio",
+    "pytest-dynamodb",
 ]
 
 [project.urls]
